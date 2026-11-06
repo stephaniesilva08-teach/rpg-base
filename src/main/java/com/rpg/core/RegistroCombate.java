@@ -52,6 +52,7 @@ public class RegistroCombate {
      * Vuelca el registro actual a un archivo de texto.
      * @param agregar true = agrega al final y conserva los combates anteriores; false = sobrescribe el archivo
      */
+    // TALLER ARCHIVOS: vuelve a escribir el registro acumulado en un archivo de texto (.txt), con agregar o sobrescrito.
     public void guardarEnArchivo(File archivo, boolean agregar) throws IOException {
         String contenido = "===== Registro guardado el " + LocalDateTime.now().format(FORMATO_FECHA) + " ====="
                 + System.lineSeparator() + getTexto();
@@ -59,6 +60,7 @@ public class RegistroCombate {
     }
 
     /** Lee de vuelta un registro guardado. Si el archivo no existe lanza FileNotFoundException. */
+    // TALLER ARCHIVOS: lee de vuelta un registro guardado en un archivo de texto.
     public static List<String> leerDeArchivo(File archivo) throws IOException {
         return LogCombateArchivo.leer(archivo);
     }

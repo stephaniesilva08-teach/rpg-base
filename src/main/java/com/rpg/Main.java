@@ -38,10 +38,10 @@ public class Main {
                 case 1 -> motor.combateRapido();
                 case 2 -> motor.jugarTorneo();
                 case 3 -> motor.mostrarBestiario();
-                case 4 -> motor.mostrarHistorial();
-                case 5 -> motor.cargarPartida();
-                case 6 -> motor.mostrarArchivos();
-                case 7 -> motor.borrarArchivos();
+                case 4 -> motor.mostrarHistorial(); // TALLER ARCHIVOS: muestra el historial leido de un archivo
+                case 5 -> motor.cargarPartida(); // TALLER ARCHIVOS: carga la partida serializada
+                case 6 -> motor.mostrarArchivos(); // TALLER ARCHIVOS: muestra informacion de los archivos de juego
+                case 7 -> motor.borrarArchivos(); // TALLER ARCHIVOS: menu para borrar la partida o el historial
                 default -> System.out.println("Hasta luego.");
             }
         } while (opcion != 0);

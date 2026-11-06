@@ -453,6 +453,9 @@ public abstract class Personaje implements ICombatiente, Serializable {
         return List.copyOf(efectos.values());
     }
 
+    // TALLER ARCHIVOS: el personaje es un componente de la partida y se serializa. Los campos transient
+    // (hilos de efectos y la escucha de efectos) no se guardan porque solo describen lo que corre en este momento.
+    //
     // ---- serializacion
 
     /** synchronized: mientras se escribe el personaje, ningun hilo de efecto puede cambiar su vida, estado o efectos. */

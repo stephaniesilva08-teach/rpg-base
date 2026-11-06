@@ -338,6 +338,7 @@ public class MotorJuego {
      * Guarda la partida: deja el resumen en memoria (ultimoGuardado) y escribe el estado en disco con
      * serializacion (partidas/partida.dat). Se llama al terminar una pelea o torneo.
      */
+    // TALLER ARCHIVOS: el estado se guarda en memoria (ultimoGuardado) y en disco con serializacion.
     public void guardarProgreso() {
         synchronized (candado) {
             guardar("Progreso guardado");
@@ -348,6 +349,7 @@ public class MotorJuego {
      * Lo llama el hilo daemon cada cierto tiempo (tambien en mitad de un combate: guarda las estadisticas actuales
      * de los personajes). No hace nada si no hay partida en marcha o si nada cambio desde el ultimo guardado.
      */
+    // TALLER ARCHIVOS: guardado periodico en disco cada cierto intervalo (hilo daemon).
     public void autoguardar() {
         synchronized (candado) {
             if (sesionActiva && !construirResumen().equals(ultimoGuardado)) {
@@ -424,6 +426,7 @@ public class MotorJuego {
     // ---- historial de combates (texto) y archivos
 
     /** Agrega el registro del combate al final del historial (sin borrar los anteriores). */
+    // TALLER ARCHIVOS: vuelve a escribir el historial de combates en un archivo de texto (sin borrar los anteriores).
     private void archivarRegistro() {
         try {
             registro.guardarEnArchivo(ArchivosPartida.archivoHistorial(), true);
@@ -469,6 +472,7 @@ public class MotorJuego {
         }
     }
 
+    // TALLER ARCHIVOS: carga la partida serializada desde el archivo .dat y continua con el estado guardado.
     public void cargarPartida() {
         try {
             PartidaGuardada partida = gestorPartida.cargar();
@@ -505,6 +509,7 @@ public class MotorJuego {
         }
     }
 
+    // TALLER ARCHIVOS: menu para borrar la partida guardada o el historial de combates.
     public void borrarArchivos() {
         System.out.printf("1. Partida guardada (%s)  2. Historial de combates (%s)  0. Cancelar%n",
                 ArchivosPartida.NOMBRE_PARTIDA, ArchivosPartida.NOMBRE_HISTORIAL);

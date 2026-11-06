@@ -242,23 +242,38 @@ en `MotorJuego`, `RegistroCombate`, `Main` y las clases del dominio.
 
 ## Investigacion obligatoria
 
-Dos temas de la guia no se explican en las presentaciones de las unidades 4.1 y 4.2. Debes investigarlos
-por tu cuenta y dejar evidencia en el proyecto:
+Dos temas de la guia no se explican en las presentaciones de las unidades 4.1 y 4.2. He investigado y realizado
+las pruebas, de las cuales se deja evidencia en el proyecto (clases en `com.rpg.demo`).
 
-- [ ] **Hilos daemon.** Demuestra con una prueba que la JVM cierra aunque el hilo daemon siga vivo, y que
-  `setDaemon(true)` despues de `start()` lanza `IllegalThreadStateException`. Anota en un comentario la
-  diferencia entre hilo de usuario y hilo daemon.
-- [ ] **`ReentrantLock`.** Reescribe `Personaje.recibirDanio` con `lock()` / `unlock()` dentro de `try-finally`
-  y explica en 2 o 3 lineas cuando lo preferirias a `synchronized`. Si el `unlock()` no esta en el `finally`,
-  el lock puede quedar tomado para siempre.
+- [x] **Hilos daemon.** He realizado una prueba (`DemoHilosDaemon.java`) que demuestra que la JVM cierra aunque el
+  hilo daemon siga vivo, y que `setDaemon(true)` despues de `start()` lanza `IllegalThreadStateException`.
+  Diferencia entre hilo de usuario y hilo daemon:
+  * **Hilo de usuario:** la JVM espera a que termine antes de cerrarse (impide el cierre final).
+  * **Hilo daemon:** la JVM puede cerrarse en cualquier momento; no impide el cierre final y se mata al salir.
+
+- [x] **`ReentrantLock`.** La he demostrado con `DemoReentrantLock.java`: `recibirDanio` reescrita con `lock()` /
+  `unlock()` dentro de `try-finally`. La regla de oro: el `unlock()` siempre debe ir en el `finally`; si no lo
+  hace, y ocurre una excepcion durante el bloque, el lock se queda tomado para siempre (deadlock permanente).
+  Cuando lo prefiero a `synchronized`:
+  * `tryLock()` con tiempo de espera (no bloqueo indefinido).
+  * `lockInterruptibly()` para interrumpir la espera del hilo.
+  * `fairness` (preferencia por el hilo que mas tiempo espera).
+  * Varias `Condition` sobre el mismo cerrojo para sincronizar subconjuntos de hilos.
 
 ## Investigacion obligatoria (taller de archivos)
 
-- [ ] **`FileWriter` vs `Files.writeString`.** Explica en 2 o 3 lineas la diferencia (flujo con buffer que
-  abres y cierras tu, frente a una sola llamada de NIO que escribe todo el texto) y cuando usarias cada uno.
-- [ ] **Seguridad de `Serializable`.** Explica por que no se debe deserializar (`readObject`) datos que no
-  son de confianza: un archivo manipulado puede ejecutar codigo o consumir recursos al reconstruir objetos.
-  Anota que alternativas existen (por ejemplo JSON o un formato de texto propio).
+- [x] **`FileWriter` vs `Files.writeString`.** Explica en 2 o 3 lineas la diferencia y cuando usarias cada uno:
+  * `FileWriter` + `BufferedWriter`: un flujo con buffer que abres y cierras tu; sirve para ir escribiendo
+    poco a poco o archivos grandes; necesitas manejar el cierre y el buffer explícitamente.
+  * `Files.writeString` (NIO): una sola llamada que escribe todo el texto y cierra a solas; más corto y
+    seguro, útil cuando ya tienes el texto completo y es de tamaño razonable.
+  * Uso: `FileWriter` cuando escribes en un flujo (poco a poco, archivos grandes, `newLine()`/append controlado);
+    `Files.writeString` cuando tienes el texto completo y es de tamaño razonable.
+
+- [x] **Seguridad de `Serializable`.** No se debe deserializar (`readObject`) datos que no son de
+    confianza: Java reconstruye los objetos y ejecuta el código que el archivo diga, así un archivo
+    manipulado puede encadenar clases para ejecutar codigo o consumir memoria/CPU. Alternativas: JSON o un
+    formato de texto propio (no tomado como seguro por defecto).
 
 ## Adaptaciones respecto a la guia
 
