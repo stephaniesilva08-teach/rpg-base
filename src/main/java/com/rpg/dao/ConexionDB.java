@@ -72,8 +72,8 @@ public class ConexionDB {
         try (BufferedReader lector = new BufferedReader(new FileReader(archivo))) {
             String linea;
             while ((linea = lector.readLine()) != null) {
-                // Ignorar lineas vacias
-                if (linea.isBlank()) {
+                // Ignorar lineas vacias o comentarios
+                if (linea.isBlank() || linea.trim().startsWith("#")) {
                     continue;
                 }
                 // Separar clave y valor usando split con limite 2
