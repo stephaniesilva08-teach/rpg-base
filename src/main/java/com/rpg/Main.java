@@ -30,7 +30,7 @@ public class Main {
         int opcion;
         do {
             mostrarMenu();
-            opcion = consola.leerEntero("Opcion: ", 0, 8);
+            opcion = consola.leerEntero("Opcion: ", 0, 9);
             switch (opcion) {
                 case 1 -> motor.combateRapido();
                 case 2 -> motor.jugarTorneo();
@@ -40,6 +40,7 @@ public class Main {
                 case 6 -> motor.mostrarArchivos();
                 case 7 -> motor.borrarArchivos();
                 case 8 -> iniciarMenuHeroes(consola);
+                case 9 -> motor.cargarHeroeDesdeBd();
                 default -> System.out.println("Hasta luego.");
             }
         } while (opcion != 0);
@@ -55,6 +56,7 @@ public class Main {
         System.out.println("6. Ver archivos del juego");
         System.out.println("7. Borrar archivos guardados");
         System.out.println("8. Gestion de heroes (JDBC + MVC)");
+        System.out.println("9. Cargar heroe desde BD");
         System.out.println("0. Salir");
     }
 

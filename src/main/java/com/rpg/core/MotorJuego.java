@@ -29,9 +29,14 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.OptionalInt;
 import java.util.Random;
+
+import com.rpg.controller.HeroeController;
+import com.rpg.dao.HeroeDAO;
+import com.rpg.model.Heroe;
 
 
 public class MotorJuego {
@@ -496,6 +501,46 @@ public class MotorJuego {
     }
 
     
+    public void cargarHeroeDesdeBd() {
+        List<Heroe> heroes = HeroeController.listarHeroes();
+
+        if (heroes == null || heroes.isEmpty()) {
+            System.out.println("\nNo hay heroes registrados en la base de datos.");
+            return;
+        }
+
+        System.out.println("\n=== HEROES DE LA BASE DE DATOS ===");
+        for (int i = 0; i < heroes.size(); i++) {
+            Heroe h = heroes.get(i);
+            System.out.printf("  %d. %s | %s | VidaMax: %d | Nivel: %d%n",
+                    i + 1, h.getNombre(), h.getTipo(),
+                    h.getVidaMaxima(), h.getNivel());
+        }
+
+        int seleccion = consola.leerEntero("\nSelecciona un heroe (1-" + heroes.size() + "): ", 1, heroes.size());
+        Heroe heroe = heroes.get(seleccion - 1);
+
+        Personaje jugador;
+        if ("guerrero".equalsIgnoreCase(heroe.getTipo())) {
+            jugador = new Guerrero(heroe.getNombre());
+        } else if ("mago".equalsIgnoreCase(heroe.getTipo())) {
+            jugador = new Mago(heroe.getNombre());
+        } else {
+            System.out.println("Tipo de heroe no reconocido.");
+            return;
+        }
+
+        jugador.setVidaMaxima(heroe.getVidaMaxima());
+
+        System.out.printf("\n=== COMBATIENTE CARGADO: %s (%s) ===%n",
+                jugador.getNombre(), jugador.getTipo());
+        System.out.printf("Vida: %d/%d | Arma: %s%n",
+                jugador.getVida(), jugador.getVidaMaxima(),
+                jugador.getArma() != null ? jugador.getArma().getNombre() : "ninguna");
+
+        combateRapido(); 
+    }
+
     public void borrarArchivos() {
         System.out.printf("1. Partida guardada (%s)  2. Historial de combates (%s)  0. Cancelar%n",
                 ArchivosPartida.NOMBRE_PARTIDA, ArchivosPartida.NOMBRE_HISTORIAL);
