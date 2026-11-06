@@ -8,15 +8,7 @@ import java.io.Serializable;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-/**
- * Foto del estado de la partida: lo que se escribe en el .dat con ObjectOutputStream.
- *
- * <p>Por que no se debe deserializar (readObject) datos que no son de confianza: al leer, Java reconstruye objetos
- * y ejecuta codigo de las clases que el archivo diga, y un archivo manipulado puede encadenar clases para ejecutar
- * codigo o consumir memoria y CPU hasta tumbar el programa. Por eso {@link GestorPartida} solo acepta clases del juego
- * y de java.lang / java.util (ObjectInputFilter). Alternativas mas seguras: JSON, o un formato de texto propio, que
- * solo leen datos y nunca instancian clases arbitrarias.</p>
- */
+
 public class PartidaGuardada implements Serializable {
 
     @Serial
