@@ -42,6 +42,7 @@ public class MotorJuego {
     private static final long ESPERA_CIERRE_MS = 2000L;
 
     private final Consola consola;
+// TALLER ARCHIVOS
     private final RegistroCombate registro = new RegistroCombate();
     private final Arena arena = new Arena(registro, new Random());
     private final Bestiario bestiario = new Bestiario();
@@ -229,6 +230,7 @@ public class MotorJuego {
             OptionalInt opcion = consola.leerEnteroConTiempo("Accion: ", 0, 4);
             if (opcion.isEmpty()) {
                 return Accion.TIEMPO_AGOTADO;
+// TALLER CONCURRENCIA
             }
             return switch (opcion.getAsInt()) {
                 case 1 -> Accion.ATACAR;
@@ -336,6 +338,7 @@ public class MotorJuego {
 
     
     
+// TALLER CONCURRENCIA
     public void autoguardar() {
         synchronized (candado) {
             if (sesionActiva && !construirResumen().equals(ultimoGuardado)) {

@@ -27,6 +27,7 @@ import java.util.function.Consumer;
 
 public abstract class Personaje implements ICombatiente, Serializable {
 
+// TALLER ARCHIVOS
     @Serial
     private static final long serialVersionUID = 1L;
 
@@ -115,6 +116,7 @@ public abstract class Personaje implements ICombatiente, Serializable {
             throw new IllegalArgumentException("El danio no puede ser negativo");
         }
         setVida(vida - cantidad);
+// TALLER CONCURRENCIA
     }
 
     
@@ -169,6 +171,7 @@ public abstract class Personaje implements ICombatiente, Serializable {
         if (!estaVivo()) {
             return;
         }
+// TALLER CONCURRENCIA
         interrumpirHilo(efecto.getNombre());
         EstadoEfecto activo = efecto.copia();
         efectos.put(activo.getNombre(), activo);

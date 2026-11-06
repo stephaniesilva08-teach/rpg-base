@@ -39,9 +39,12 @@ public class Main {
                 case 2 -> motor.jugarTorneo();
                 case 3 -> motor.mostrarBestiario();
                 case 4 -> motor.mostrarHistorial(); 
+// TALLER ARCHIVOS
                 case 5 -> motor.cargarPartida(); 
+// TALLER ARCHIVOS
                 case 6 -> motor.mostrarArchivos(); 
                 case 7 -> motor.borrarArchivos(); 
+// TALLER ARCHIVOS
                 default -> System.out.println("Hasta luego.");
             }
         } while (opcion != 0);

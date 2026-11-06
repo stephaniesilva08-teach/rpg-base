@@ -25,6 +25,7 @@ public class TorneoManager {
     public Optional<Personaje> jugarTorneo() {
         List<Personaje> gladiadores = crearGladiadores().getMiembros();
 
+// TALLER CONCURRENCIA
         
         
         

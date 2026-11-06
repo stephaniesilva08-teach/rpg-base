@@ -49,6 +49,7 @@ public class RegistroCombate {
     public void guardarEnArchivo(File archivo, boolean agregar) throws IOException {
         String contenido = "===== Registro guardado el " + LocalDateTime.now().format(FORMATO_FECHA) + " ====="
                 + System.lineSeparator() + getTexto();
+// TALLER ARCHIVOS
         LogCombateArchivo.guardar(archivo, contenido, agregar);
     }
 
