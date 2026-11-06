@@ -1,11 +1,16 @@
 package com.rpg.entities;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.Set;
 import java.util.TreeSet;
 
-// TALLER ARCHIVOS: candidata a Serializable (victorias, derrotas y logros son parte de la partida).
-public class PerfilJugador {
+// Serializable: victorias, derrotas y logros son parte de la partida.
+public class PerfilJugador implements Serializable {
+
+    @Serial
+    private static final long serialVersionUID = 1L;
 
     private int victorias;
     private int derrotas;

@@ -1,12 +1,18 @@
 package com.rpg.entities;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 /** Agregacion: el gremio guarda referencias a personajes que existen por su cuenta. */
-// TALLER ARCHIVOS: candidata a Serializable (guarda la lista de Personaje, que tambien debe serlo).
-public class Gremio {
+// Serializable: guarda la lista de Personaje, que tambien lo es. El ciclo Gremio <-> Personaje no es problema:
+// ObjectOutputStream recuerda los objetos ya escritos y los reconstruye con las mismas referencias.
+public class Gremio implements Serializable {
+
+    @Serial
+    private static final long serialVersionUID = 1L;
 
     private final String nombre;
     private final List<Personaje> miembros = new ArrayList<>();

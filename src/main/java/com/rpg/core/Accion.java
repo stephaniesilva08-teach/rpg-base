@@ -6,5 +6,7 @@ public enum Accion {
     ESPECIAL,
     POCION,
     ESTADO,
-    HUIR
+    HUIR,
+    /** No es algo que el jugador elija: el temporizador de turno llego a cero antes de que respondiera. */
+    TIEMPO_AGOTADO
 }
