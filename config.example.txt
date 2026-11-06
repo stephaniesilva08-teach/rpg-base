@@ -1,0 +1,12 @@
+# Archivo de configuracion para la conexion a MySQL
+# Copia este archivo a config.txt y completa los datos con los tuyos
+
+# URL de conexion a MySQL
+# Formato: jdbc:mysql://HOST:PUERTO/NOMBRE_DE_LA_BD
+url=jdbc:mysql://localhost:3306/rpg_grupal_db
+
+# Usuario de MySQL
+usuario=root
+
+# Contraseña de MySQL
+clave=password

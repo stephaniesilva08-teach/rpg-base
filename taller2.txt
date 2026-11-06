@@ -1,0 +1,112 @@
+# Unidad 5.2: JDBC y Arquitectura MVC aplicados al Simulador RPG
+
+Los dos ejercicios se hacen sobre este mismo proyecto (`rpg-base`) y solo usan el temario de las
+diapositivas: JDBC, `PreparedStatement`, `executeQuery` / `executeUpdate`, inyeccion SQL, MVC y DAO.
+Base de datos: **MySQL**. Los mensajes de consola no llevan tildes, igual que el resto del proyecto.
+
+## Reglas comunes
+
+- Dependencia `mysql-connector-j` agregada en el `pom.xml` (no se agrega el JAR a mano).
+- Prohibido concatenar datos del usuario dentro de un SQL: todo con `PreparedStatement` y `?`.
+- Todo recurso (`Connection`, `PreparedStatement`, `ResultSet`) se cierra siempre, con `try-with-resources`.
+- Regla MVC: la **View** nunca toca la BD, el **Controller** solo coordina, y **solo el DAO** usa JDBC.
+- `Main` unicamente arranca la aplicacion llamando a la View.
+- Ningun `catch` vacio ni que solo imprima la traza: mensaje claro para el usuario.
+- Prohibido hardcodear datos sensibles (URL, usuario, clave) en el codigo fuente: `ConexionDB` los lee
+  de un archivo `config.txt` (ver la seccion "Archivo `config.txt`"). El `config.txt` real va en `.gitignore`.
+
+## Archivo `config.txt`
+
+Se ubica en la raiz del proyecto, junto al `pom.xml`. Formato `clave=valor`, una por linea:
+
+```
+url=jdbc:mysql://localhost:3306/NOMBRE_DE_LA_BD
+usuario=su_usuario
+clave=su_clave
+```
+
+`ConexionDB` debe leerlo aplicando lo visto en manejo de archivos:
+
+- Abrirlo con `File` (comprobar `exists()`) y leerlo con `BufferedReader` + `FileReader`,
+  linea por linea con `readLine()`, dentro de `try-with-resources`.
+- Separar cada linea en clave y valor (`split("=", 2)`, `trim()`), ignorando lineas vacias.
+- Si el archivo no existe o falta una clave, mostrar un mensaje claro (`FileNotFoundException` / `IOException`)
+  y no intentar conectar. El juego no debe caerse con una traza.
+- Ninguna clase fuera de `ConexionDB` lee el archivo ni conoce la clave.
+- Entregar un `config.example.txt` con valores de ejemplo (sin datos reales). El `config.txt` real **no se sube** al repositorio.
+
+## Dependencia para el `pom.xml`
+
+Agregarla dentro de la etiqueta `<dependencies>` y recargar Maven (en IntelliJ: boton "Load Maven Changes"):
+
+```xml
+<dependency>
+    <groupId>com.mysql</groupId>
+    <artifactId>mysql-connector-j</artifactId>
+    <version>8.4.0</version>
+</dependency>
+```
+
+Sin este controlador, `DriverManager` no sabe como hablar con MySQL y la conexion falla.
+
+## Estructura de paquetes esperada
+
+```
+com.rpg
+  Main
+  view/         consola y menus (solo Scanner y System.out)
+  controller/   flujo y reglas de validacion
+  model/        entidades POJO
+  dao/          toda la logica JDBC (ConexionDB + un DAO por entidad)
+```
+
+Las clases actuales (`core`, `entities`, `items`...) se conservan: el modulo nuevo convive con ellas.
+
+---
+
+## EJERCICIO GRUPAL (compañeros marcados con "- x")
+
+### "Registro de Heroes persistente"
+
+Hasta ahora los heroes viven en memoria y desaparecen al cerrar el juego. Deben crear un modulo que
+los guarde en MySQL y los gestione desde un menu, aplicando MVC + DAO.
+
+**Base de datos:** `rpg_grupal_db`
+
+**Tabla:** `heroes`
+
+Ustedes disenan las columnas y escriben el `schema.sql` (con tipos, claves primarias y restricciones).
+Deben cubrir lo que piden los requisitos: identificador, nombre unico, tipo (guerrero o mago),
+vida maxima y nivel.
+
+**Requisitos**
+
+1. `ConexionDB`: lee `config.txt` y devuelve una `Connection` con `DriverManager.getConnection(url, usuario, clave)`.
+   Explicar en comentario cada parte de la URL (protocolo, host, puerto, esquema).
+2. `Heroe` (POJO con atributos privados, constructor y getters/setters validados).
+3. `HeroeDAO` con estos metodos, todos con `PreparedStatement`:
+   - `insertar(Heroe)` -> `executeUpdate`
+   - `listar()` -> `executeQuery` + `while (rs.next())`, devuelve `List<Heroe>`
+   - `buscarPorTipo(String tipo)` -> `executeQuery` con `?`
+   - `actualizarNivel(int id, int nivel)` -> devuelve filas afectadas
+   - `eliminar(int id)` -> devuelve filas afectadas
+4. `HeroeController`: valida (nombre no vacio, nivel >= 1, tipo valido), llama al DAO y decide el mensaje.
+   Si `executeUpdate` devuelve 0, informa "no existe un heroe con ese id".
+5. `HeroeUI` (View): menu por consola con las 5 opciones, imprime los resultados. Sin una sola linea de JDBC.
+6. `Main` solo hace `new HeroeUI(...).iniciar()`.
+7. Integracion con el juego: en el menu principal, opcion "Cargar heroe desde BD" que crea un `Guerrero`
+   o `Mago` a partir de una fila y lo usa en un combate rapido.
+
+**Entregables:** codigo, `schema.sql`, `config.example.txt`, y un diagrama (puede ser a mano o texto)
+con el flujo View -> Controller -> DAO -> BD para la opcion "insertar heroe".
+
+**Evaluacion (grupal)**
+
+| Criterio | Puntos |
+|----------|--------|
+| JDBC correcto (conexion, ciclo de vida, cierre de recursos) | 25 |
+| `PreparedStatement` en todas las consultas | 20 |
+| `executeQuery` vs `executeUpdate` bien usados | 10 |
+| Separacion MVC estricta (View sin BD, Main minimo) | 25 |
+| DAO + POJO bien disenados | 10 |
+| Integracion con el juego y manejo de errores | 10 |
