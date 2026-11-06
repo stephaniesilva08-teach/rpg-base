@@ -8,7 +8,7 @@ import com.rpg.entities.Personaje;
 import java.util.List;
 import java.util.Optional;
 
-/** Torneo de 4 gladiadores: dos semifinales (en paralelo) y una final. */
+
 public class TorneoManager {
 
     private static final long MUESTRA_DURANTE_MS = 300L;
@@ -21,13 +21,13 @@ public class TorneoManager {
         this.registro = registro;
     }
 
-    /** @return el campeon del torneo, o vacio si el torneo se interrumpio antes de terminar */
+    
     public Optional<Personaje> jugarTorneo() {
         List<Personaje> gladiadores = crearGladiadores().getMiembros();
 
-        // TALLER CONCURRENCIA (resuelto): cada semifinal corre en su propio Thread y escribe su ganador en esta
-        // memoria compartida. El hilo principal solo la lee DESPUES de los join(): join() garantiza que el otro
-        // hilo ya termino y que sus escrituras son visibles.
+        
+        
+        
         Personaje[] finalistas = new Personaje[2];
         Thread semifinalA = new Thread(tarea("Semifinal A",
                 () -> finalistas[0] = simularSemifinal(gladiadores.get(0), gladiadores.get(1))), "semifinal-A");
@@ -74,7 +74,7 @@ public class TorneoManager {
         return arena.duelo(a, b);
     }
 
-    /** Envuelve el cuerpo de una semifinal: etiqueta sus lineas del registro y no deja morir al hilo en silencio. */
+    
     private Runnable tarea(String etiqueta, Runnable cuerpo) {
         return () -> {
             registro.usarEtiqueta(etiqueta);
@@ -88,7 +88,7 @@ public class TorneoManager {
         };
     }
 
-    /** Muestra Thread.getState() de cada semifinal para ver el ciclo de vida del hilo. */
+    
     private void mostrarEstados(String momento, Thread semifinalA, Thread semifinalB) {
         registro.agregar("[Hilos %s] %s: %s | %s: %s", momento,
                 semifinalA.getName(), semifinalA.getState(), semifinalB.getName(), semifinalB.getState());

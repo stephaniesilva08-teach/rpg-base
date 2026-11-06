@@ -6,11 +6,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-/** Agregacion: el gremio guarda referencias a personajes que existen por su cuenta. */
-// Serializable: guarda la lista de Personaje, que tambien lo es. El ciclo Gremio <-> Personaje no es problema:
-// ObjectOutputStream recuerda los objetos ya escritos y los reconstruye con las mismas referencias.
-// TALLER ARCHIVOS: el gremio es parte de la partida serializada; el ciclo Gremio->Personaje se reconstruye al
-// cargar una partida (ObjectOutputStream conserva las referencias entre objetos).
+
+
+
+
+
 public class Gremio implements Serializable {
 
     @Serial

@@ -4,7 +4,7 @@ import com.rpg.entities.enums.TipoPersonaje;
 
 import java.io.Serial;
 
-/** Monstruo del bestiario. Su ataque especial pega fuerte y puede envenenar, quemar o aturdir. */
+
 public class Enemigo extends Personaje {
 
     @Serial
@@ -27,7 +27,7 @@ public class Enemigo extends Personaje {
         this.aturde = aturde;
     }
 
-    /** Nueva instancia con la vida llena: el bestiario guarda plantillas y se combate con copias. */
+    
     public Enemigo copia() {
         return new Enemigo(getNombre(), getVidaMaxima(), ataque, getDefensa(), efectoEspecial, aturde);
     }

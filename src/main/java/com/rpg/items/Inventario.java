@@ -10,11 +10,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-/**
- * Contenedor generico con capacidad limitada: Inventario&lt;Pocion&gt; solo acepta pociones.
- * Serializable: los elementos T (hoy Pocion) tambien lo son. Es synchronized porque el auto-guardado lo puede
- * escribir a disco mientras el jugador usa una pocion.
- */
+
 public class Inventario<T> implements Iterable<T>, Serializable {
 
     @Serial
@@ -53,7 +49,7 @@ public class Inventario<T> implements Iterable<T>, Serializable {
         return elementos.isEmpty();
     }
 
-    /** Recorre una copia: asi nadie se encuentra con la lista cambiando a mitad del recorrido. */
+    
     @Override
     public synchronized Iterator<T> iterator() {
         return new ArrayList<>(elementos).iterator();

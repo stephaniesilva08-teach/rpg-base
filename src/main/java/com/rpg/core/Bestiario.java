@@ -10,7 +10,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-/** Catalogo de monstruos (Map nombre -> plantilla) y contador de derrotas por monstruo. */
+
 public class Bestiario implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -35,7 +35,7 @@ public class Bestiario implements Serializable {
         return new ArrayList<>(catalogo.keySet());
     }
 
-    /** Busca ignorando mayusculas (equalsIgnoreCase, nunca ==). @return copia nueva o null si no existe */
+    
     public Enemigo crearEnemigo(String nombre) {
         for (Map.Entry<String, Enemigo> entrada : catalogo.entrySet()) {
             if (entrada.getKey().equalsIgnoreCase(nombre)) {
@@ -65,12 +65,12 @@ public class Bestiario implements Serializable {
         return texto.toString();
     }
 
-    /** Copia del contador de derrotas (para guardarlo en la partida). */
+    
     public Map<String, Integer> getDerrotados() {
         return new LinkedHashMap<>(derrotados);
     }
 
-    /** Reemplaza el contador de derrotas por el de una partida cargada. */
+    
     public void restaurarDerrotados(Map<String, Integer> guardados) {
         derrotados.clear();
         derrotados.putAll(guardados);

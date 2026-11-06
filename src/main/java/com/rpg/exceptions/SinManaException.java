@@ -2,7 +2,7 @@ package com.rpg.exceptions;
 
 import java.io.Serial;
 
-/** Se lanza cuando un hechizo cuesta mas mana del disponible. */
+
 public class SinManaException extends JuegoException {
 
     @Serial

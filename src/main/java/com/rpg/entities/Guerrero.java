@@ -37,7 +37,7 @@ public class Guerrero extends Personaje {
         return super.getDefensa() + fuerzaEscudo;
     }
 
-    /** Golpe Brutal: pega el doble a cambio de sacrificar vida propia. */
+    
     @Override
     public String realizarAtaqueEspecial(Personaje objetivo) {
         if (getVida() <= COSTO_VIDA_ESPECIAL) {

@@ -9,14 +9,14 @@ import java.util.Scanner;
 public class Main {
 
     public static void main(String[] args) {
-        // El Scanner NO se cierra a proposito: cerrarlo cierra System.in, y el hilo lector del teclado (daemon)
-        // esta bloqueado leyendo ahi; en JDK 21 el cierre esperaria a que ese hilo suelte el candado y la
-        // aplicacion tardaria en terminar. System.in no necesita cerrarse.
+        
+        
+        
         Scanner scanner = new Scanner(System.in);
         try {
             Consola consola = new Consola(scanner);
             MotorJuego motor = new MotorJuego(consola);
-            // Auto-guardado en un hilo daemon: guarda de fondo y no impide cerrar la aplicacion.
+            
             motor.iniciarAutoGuardado();
             motor.avisarPartidaExistente();
             try {
@@ -38,10 +38,10 @@ public class Main {
                 case 1 -> motor.combateRapido();
                 case 2 -> motor.jugarTorneo();
                 case 3 -> motor.mostrarBestiario();
-                case 4 -> motor.mostrarHistorial(); // TALLER ARCHIVOS: muestra el historial leido de un archivo
-                case 5 -> motor.cargarPartida(); // TALLER ARCHIVOS: carga la partida serializada
-                case 6 -> motor.mostrarArchivos(); // TALLER ARCHIVOS: muestra informacion de los archivos de juego
-                case 7 -> motor.borrarArchivos(); // TALLER ARCHIVOS: menu para borrar la partida o el historial
+                case 4 -> motor.mostrarHistorial(); 
+                case 5 -> motor.cargarPartida(); 
+                case 6 -> motor.mostrarArchivos(); 
+                case 7 -> motor.borrarArchivos(); 
                 default -> System.out.println("Hasta luego.");
             }
         } while (opcion != 0);

@@ -2,7 +2,7 @@ package com.rpg.exceptions;
 
 import java.io.Serial;
 
-/** Se lanza al agregar un elemento a un inventario que ya esta lleno. */
+
 public class CapacidadExcedidaException extends JuegoException {
 
     @Serial

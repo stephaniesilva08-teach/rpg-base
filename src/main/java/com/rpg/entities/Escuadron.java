@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-/** Agregacion: disolver el escuadron no destruye a los personajes. */
+
 public class Escuadron {
 
     private final String nombre;

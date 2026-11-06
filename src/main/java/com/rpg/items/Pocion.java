@@ -21,10 +21,7 @@ public class Pocion implements Serializable {
         this(nombre, curacion, raridad, null, false);
     }
 
-    /**
-     * @param efecto   efecto que se aplica al usarla (por ejemplo un HoT), o null
-     * @param purifica si es true, elimina los efectos de dano continuo (antidoto)
-     */
+    
     public Pocion(String nombre, int curacion, RaridadItem raridad, EstadoEfecto efecto, boolean purifica) {
         this.nombre = nombre;
         this.curacion = curacion;

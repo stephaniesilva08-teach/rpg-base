@@ -33,7 +33,7 @@ import java.util.Optional;
 import java.util.OptionalInt;
 import java.util.Random;
 
-/** Coordina el flujo del juego: crear heroe, combatir, torneo, bestiario y guardado. */
+
 public class MotorJuego {
 
     private static final String NOMBRE_GREMIO = "Guardianes del Alba";
@@ -46,17 +46,17 @@ public class MotorJuego {
     private final Arena arena = new Arena(registro, new Random());
     private final Bestiario bestiario = new Bestiario();
     private final TorneoManager torneo = new TorneoManager(arena, registro);
-    // UNA sola instancia compartida por el hilo principal y el auto-guardado: sus metodos son synchronized.
+    
     private final GestorPartida gestorPartida = new GestorPartida(ArchivosPartida.archivoPartida());
 
-    // Candado de la partida: perfil, gremio, bestiario, ultimoGuardado y sesionActiva los toca el hilo principal y
-    // tambien el hilo de auto-guardado, asi que todo acceso compartido va dentro de synchronized (candado).
+    
+    
     private final Object candado = new Object();
     private PerfilJugador perfil = new PerfilJugador();
     private Gremio gremio = new Gremio(NOMBRE_GREMIO);
-    private String ultimoGuardado = "";   // estado de la partida en memoria (la ultima copia)
-    // true cuando ya hay una partida en marcha en esta sesion (se creo un heroe, hubo torneo o se cargo una partida).
-    // Mientras sea false el auto-guardado no escribe nada, para no pisar una partida vieja con una vacia.
+    private String ultimoGuardado = "";   
+    
+    
     private boolean sesionActiva;
     private Thread hiloAutoGuardado;
 
@@ -64,7 +64,7 @@ public class MotorJuego {
         this.consola = consola;
     }
 
-    // ---- opciones del menu principal
+    
 
     public void combateRapido() {
         registro.limpiar();
@@ -77,7 +77,7 @@ public class MotorJuego {
         try {
             huyo = combatir(jugador, enemigo);
         } finally {
-            // Termine como termine el combate, los hilos de efectos se interrumpen y terminan limpios.
+            
             arena.terminarCombate(jugador, enemigo);
         }
 
@@ -113,7 +113,7 @@ public class MotorJuego {
         }
     }
 
-    // ---- creacion de personajes
+    
 
     private Personaje crearJugador() {
         int clase = consola.leerEntero("Clase (1. Guerrero, 2. Mago): ", 1, 2);
@@ -173,9 +173,9 @@ public class MotorJuego {
         }
     }
 
-    // ---- bucle de combate
+    
 
-    /** @return true si el jugador huyo */
+    
     private boolean combatir(Personaje jugador, Enemigo enemigo) {
         int ronda = 1;
         while (jugador.estaVivo() && enemigo.estaVivo()) {
@@ -189,11 +189,7 @@ public class MotorJuego {
         return false;
     }
 
-    /**
-     * Turno del jugador. Las acciones que no gastan turno (ver estado, cancelar) vuelven a pedir.
-     * Si se agota el tiempo el turno se pierde.
-     * @return true si el jugador decidio huir
-     */
+    
     private boolean turnoJugador(Personaje jugador, Enemigo enemigo) {
         boolean turnoGastado;
         do {
@@ -201,7 +197,7 @@ public class MotorJuego {
             registro.agregar(FormatoCombate.resumen(enemigo));
             Accion accion = pedirAccion();
             if (!jugador.estaVivo() || !enemigo.estaVivo()) {
-                return false; // mientras elegia, un efecto continuo (DoT/HoT) pudo decidir el combate
+                return false; 
             }
             if (accion == Accion.HUIR) {
                 return true;
@@ -223,13 +219,9 @@ public class MotorJuego {
         return false;
     }
 
-    /**
-     * Pide la accion al jugador con un limite de tiempo.
-     * Un hilo temporizador cuenta hacia atras; si llega a cero llama al callback y el turno se pierde. Si el jugador
-     * responde antes, el temporizador se cancela con interrupt().
-     */
+    
     private Accion pedirAccion() {
-        // TALLER CONCURRENCIA (resuelto): la lectura ya no bloquea sin limite de tiempo.
+        
         System.out.println("1. Atacar  2. Habilidad especial  3. Usar pocion  4. Ver estado  0. Huir");
         GestorTurno temporizador = new GestorTurno();
         temporizador.iniciar(30, this::avisarTiempoAgotado);
@@ -251,7 +243,7 @@ public class MotorJuego {
         }
     }
 
-    /** TurnoCallback: corre en el hilo del temporizador, asi que solo hace cosas seguras entre hilos. */
+    
     private void avisarTiempoAgotado() {
         System.out.println("\n[Tiempo agotado]");
         consola.notificarTiempoAgotado();
@@ -259,8 +251,8 @@ public class MotorJuego {
 
     private boolean perderTurno(Personaje jugador) {
         registro.agregar("%s no eligio a tiempo y pierde el turno", jugador.getNombre());
-        // Se espera un Enter: asi, si el jugador estaba escribiendo cuando se acabo el tiempo, esa linea tardia se
-        // consume aqui y no se cuela como respuesta del turno siguiente.
+        
+        
         consola.leerLinea("Presiona Enter para continuar...");
         return true;
     }
@@ -293,7 +285,7 @@ public class MotorJuego {
         }
     }
 
-    // ---- resultado del combate
+    
 
     private void cerrarCombate(Personaje jugador, Enemigo enemigo, boolean huyo) {
         synchronized (candado) {
@@ -332,24 +324,18 @@ public class MotorJuego {
         }
     }
 
-    // ---- guardado (memoria + disco)
+    
 
-    /**
-     * Guarda la partida: deja el resumen en memoria (ultimoGuardado) y escribe el estado en disco con
-     * serializacion (partidas/partida.dat). Se llama al terminar una pelea o torneo.
-     */
-    // TALLER ARCHIVOS: el estado se guarda en memoria (ultimoGuardado) y en disco con serializacion.
+    
+    
     public void guardarProgreso() {
         synchronized (candado) {
             guardar("Progreso guardado");
         }
     }
 
-    /**
-     * Lo llama el hilo daemon cada cierto tiempo (tambien en mitad de un combate: guarda las estadisticas actuales
-     * de los personajes). No hace nada si no hay partida en marcha o si nada cambio desde el ultimo guardado.
-     */
-    // TALLER ARCHIVOS: guardado periodico en disco cada cierto intervalo (hilo daemon).
+    
+    
     public void autoguardar() {
         synchronized (candado) {
             if (sesionActiva && !construirResumen().equals(ultimoGuardado)) {
@@ -358,7 +344,7 @@ public class MotorJuego {
         }
     }
 
-    /** Llamar con el candado tomado. */
+    
     private void guardar(String etiqueta) {
         ultimoGuardado = construirResumen();
         try {
@@ -397,9 +383,9 @@ public class MotorJuego {
         }
     }
 
-    // ---- auto-guardado en segundo plano
+    
 
-    /** Arranca el hilo daemon que guarda cada cierto tiempo. */
+    
     public void iniciarAutoGuardado() {
         if (hiloAutoGuardado != null && hiloAutoGuardado.isAlive()) {
             return;
@@ -407,10 +393,7 @@ public class MotorJuego {
         hiloAutoGuardado = AutoGuardadoDaemon.iniciar(5000, this::autoguardar);
     }
 
-    /**
-     * Cierre ordenado: pide al auto-guardado que pare y espera lo justo para que no quede a medias.
-     * Si esta dormido termina al instante; si justo estaba guardando, termina ese guardado primero.
-     */
+    
     public void cerrar() {
         if (hiloAutoGuardado == null) {
             return;
@@ -423,10 +406,10 @@ public class MotorJuego {
         }
     }
 
-    // ---- historial de combates (texto) y archivos
+    
 
-    /** Agrega el registro del combate al final del historial (sin borrar los anteriores). */
-    // TALLER ARCHIVOS: vuelve a escribir el historial de combates en un archivo de texto (sin borrar los anteriores).
+    
+    
     private void archivarRegistro() {
         try {
             registro.guardarEnArchivo(ArchivosPartida.archivoHistorial(), true);
@@ -463,7 +446,7 @@ public class MotorJuego {
         System.out.println("Historial: " + ArchivosPartida.describir(ArchivosPartida.archivoHistorial()));
     }
 
-    /** Avisa al arrancar si ya hay una partida guardada, usando File.exists() y File.length(). */
+    
     public void avisarPartidaExistente() {
         File archivo = ArchivosPartida.archivoPartida();
         if (archivo.exists()) {
@@ -472,7 +455,7 @@ public class MotorJuego {
         }
     }
 
-    // TALLER ARCHIVOS: carga la partida serializada desde el archivo .dat y continua con el estado guardado.
+    
     public void cargarPartida() {
         try {
             PartidaGuardada partida = gestorPartida.cargar();
@@ -509,7 +492,7 @@ public class MotorJuego {
         }
     }
 
-    // TALLER ARCHIVOS: menu para borrar la partida guardada o el historial de combates.
+    
     public void borrarArchivos() {
         System.out.printf("1. Partida guardada (%s)  2. Historial de combates (%s)  0. Cancelar%n",
                 ArchivosPartida.NOMBRE_PARTIDA, ArchivosPartida.NOMBRE_HISTORIAL);
@@ -525,13 +508,13 @@ public class MotorJuego {
         }
         try {
             if (opcion == 1) {
-                // Files.deleteIfExists: false = no habia archivo; si no se puede borrar, lanza IOException con el motivo.
+                
                 boolean borrado = gestorPartida.borrar();
                 System.out.println(borrado ? "Partida borrada." : "No habia ninguna partida guardada.");
             } else if (!archivo.exists()) {
                 System.out.println("No hay historial que borrar.");
             } else if (ArchivosPartida.borrarConFile(archivo)) {
-                // File.delete(): solo da true/false; false aqui significa que existe pero no se pudo borrar.
+                
                 System.out.println("Historial borrado.");
             } else {
                 System.out.println("No se pudo borrar el historial (esta en uso o no hay permisos).");

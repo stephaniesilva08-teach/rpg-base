@@ -6,7 +6,7 @@ import com.rpg.exceptions.VidaInsuficienteException;
 
 import java.util.Random;
 
-/** Reglas de un combate: ataques, habilidades y duelos automaticos. Los efectos DoT/HoT corren en sus propios hilos. */
+
 public class Arena {
 
     private static final int PROBABILIDAD_CRITICO = 15;
@@ -23,25 +23,25 @@ public class Arena {
         this.azar = azar;
     }
 
-    /** Prepara a los combatientes: los mensajes de sus efectos continuos iran al registro de combate. */
+    
     public void iniciarCombate(Personaje... combatientes) {
         for (Personaje combatiente : combatientes) {
             combatiente.setEscuchaEfectos(registro::agregar);
         }
     }
 
-    /** Fin del combate: interrumpe los hilos de efectos que sigan corriendo y espera a que terminen limpios. */
+    
     public void terminarCombate(Personaje... combatientes) {
         for (Personaje combatiente : combatientes) {
             combatiente.cancelarEfectos();
         }
     }
 
-    /** Comprueba si puede actuar este turno. @return true si el personaje puede actuar */
+    
     public boolean iniciarTurno(Personaje personaje) {
         personaje.alIniciarTurno();
-        // TALLER CONCURRENCIA (resuelto): aqui se procesaban los efectos turno a turno. Ahora cada efecto tiene su
-        // hilo (EfectoContinuoTask) y aplica sus ticks por su cuenta; aqui solo se mira el resultado.
+        
+        
         if (!personaje.estaVivo()) {
             registro.agregar("%s cae derrotado por sus efectos", personaje.getNombre());
             return false;
@@ -64,7 +64,7 @@ public class Arena {
         registro.agregar("   %s", FormatoCombate.resumen(defensor));
     }
 
-    /** @return true si el especial se ejecuto; false si fallo por falta de mana o de vida */
+    
     public boolean intentarEspecial(Personaje atacante, Personaje defensor) {
         try {
             registro.agregar(atacante.realizarAtaqueEspecial(defensor));
@@ -76,7 +76,7 @@ public class Arena {
         }
     }
 
-    /** Turno completo controlado por el programa (enemigos y gladiadores). */
+    
     public void turnoAutomatico(Personaje atacante, Personaje defensor) {
         if (!atacante.estaVivo() || !defensor.estaVivo() || !iniciarTurno(atacante)) {
             return;
@@ -88,10 +88,7 @@ public class Arena {
         atacar(atacante, defensor);
     }
 
-    /**
-     * Pelea hasta que uno cae (o se acaban las rondas). Entre ronda y ronda hay una pausa para que los efectos
-     * continuos alcancen a aplicarse y se pueda seguir el duelo. @return el ganador
-     */
+    
     public Personaje duelo(Personaje a, Personaje b) {
         iniciarCombate(a, b);
         try {
@@ -109,7 +106,7 @@ public class Arena {
         return a.getVida() >= b.getVida() ? a : b;
     }
 
-    /** @return false si interrumpieron al hilo durante la pausa (el duelo se detiene) */
+    
     private boolean pausarRonda() {
         try {
             Thread.sleep(200);

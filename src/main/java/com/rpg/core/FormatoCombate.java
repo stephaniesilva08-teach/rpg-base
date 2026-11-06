@@ -11,7 +11,7 @@ public final class FormatoCombate {
     private FormatoCombate() {
     }
 
-    /** Barra de vida tipo [#####-----]. */
+    
     public static String barraVida(int vida, int vidaMaxima) {
         int llenas = (int) Math.round((double) vida / vidaMaxima * ANCHO_BARRA);
         if (vida > 0) {

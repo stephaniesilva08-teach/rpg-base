@@ -2,7 +2,7 @@ package com.rpg.exceptions;
 
 import java.io.Serial;
 
-/** Base de las excepciones verificadas del dominio del juego. */
+
 public abstract class JuegoException extends Exception {
 
     @Serial

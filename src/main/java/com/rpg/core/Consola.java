@@ -6,14 +6,7 @@ import java.util.Scanner;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
-/**
- * Entrada por teclado con validacion y reintento.
- *
- * <p>Un hilo daemon propio ("lector-teclado") es el unico que llama a {@code scanner.nextLine()} y deja cada linea
- * en una cola. El hilo principal espera en la cola, y el temporizador de turno tambien puede dejar ahi un aviso de
- * "tiempo agotado". Asi el turno se pierde en el momento exacto en que se acaba el tiempo, sin esperar a que el
- * jugador pulse Enter (un {@code nextLine()} bloqueado no se puede cancelar desde otro hilo).</p>
- */
+
 public class Consola {
 
     private enum Tipo { LINEA, TIEMPO_AGOTADO, FIN }
@@ -39,7 +32,7 @@ public class Consola {
             if (recibido.tipo() == Tipo.LINEA) {
                 return recibido.texto().trim();
             }
-            // Un aviso de tiempo agotado que llega fuera de un turno ya no sirve: se ignora.
+            
         }
     }
 
@@ -52,11 +45,7 @@ public class Consola {
         }
     }
 
-    /**
-     * Como {@link #leerEntero}, pero si el temporizador llama a {@link #notificarTiempoAgotado()} antes de que haya
-     * una respuesta valida, deja de esperar.
-     * @return el numero elegido, o vacio si se agoto el tiempo
-     */
+    
     public OptionalInt leerEnteroConTiempo(String mensaje, int minimo, int maximo) {
         while (true) {
             System.out.print(mensaje);
@@ -71,12 +60,12 @@ public class Consola {
         }
     }
 
-    /** Lo llama el hilo del temporizador (TurnoCallback): despierta al hilo que espera la respuesta. */
+    
     public void notificarTiempoAgotado() {
         cola.offer(new Mensaje(Tipo.TIEMPO_AGOTADO, null));
     }
 
-    /** Si el aviso llego justo cuando el jugador respondia a tiempo, se descarta para que no afecte al turno siguiente. */
+    
     public void descartarAvisoTiempo() {
         cola.removeIf(mensaje -> mensaje.tipo() == Tipo.TIEMPO_AGOTADO);
     }
@@ -113,13 +102,13 @@ public class Consola {
         return OptionalInt.empty();
     }
 
-    /** Espera el siguiente mensaje. Mantiene el comportamiento de Scanner: sin mas entrada, NoSuchElementException. */
+    
     private Mensaje siguiente() {
         iniciarLector();
         try {
             Mensaje recibido = cola.take();
             if (recibido.tipo() == Tipo.FIN) {
-                cola.offer(recibido); // cualquier lectura posterior tambien debe ver el final
+                cola.offer(recibido); 
                 throw new NoSuchElementException("No hay mas lineas en la entrada");
             }
             return recibido;
@@ -134,7 +123,7 @@ public class Consola {
             return;
         }
         lector = new Thread(this::leerTeclado, "lector-teclado");
-        lector.setDaemon(true); // si el juego termina, este hilo bloqueado en el teclado no debe impedir cerrar la JVM
+        lector.setDaemon(true); 
         lector.start();
     }
 
@@ -144,7 +133,7 @@ public class Consola {
                 cola.offer(new Mensaje(Tipo.LINEA, scanner.nextLine()));
             }
         } catch (NoSuchElementException | IllegalStateException e) {
-            // Fin de la entrada, o el Scanner se cerro al salir del juego: se avisa a quien este esperando.
+            
             cola.offer(new Mensaje(Tipo.FIN, null));
         }
     }

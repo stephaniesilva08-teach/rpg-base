@@ -2,7 +2,7 @@ package com.rpg.exceptions;
 
 import java.io.Serial;
 
-/** Excepcion no verificada: la habilidad costaria mas vida de la que se tiene. */
+
 public class VidaInsuficienteException extends RuntimeException {
 
     @Serial

@@ -6,25 +6,17 @@ import java.io.NotSerializableException;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
-/**
- * Prueba de la seccion 5 del "Checklist del taller de archivos".
- *
- * Punto: "Provocar y resolver una NotSerializableException por un objeto anidado que no es Serializable".
- *
- * Un objeto que implementa Serializable, pero que contiene un campo anidado que NO lo es,
- * lanza NotSerializableException al serializarse. Esto demuestra que el algoritmo de
- * serializacion revisa completo el grafo de objetos, no solo la superficie del contenedor.
- */
+
 public class DemoNotSerializableException {
 
-    // Campo que NO es Serializable: hace que el wrapper falle la serializacion.
+    
     static class HijoNoSerializable {
         int valor = 42;
     }
 
-    // Wrapper que SI es Serializable, pero carga un HijoNoSerializable anidado.
-    // Al intentar serializar un WrapperSerializable, el ObjectOutputStream recorre el
-    // grafo y encuentra el HijoNoSerializable, que no es Serializable, y lanza la excepcion.
+    
+    
+    
     static class WrapperSerializable implements Serializable {
         int id;
         HijoNoSerializable hijo;
@@ -57,7 +49,7 @@ public class DemoNotSerializableException {
             System.exit(1);
         }
 
-        // Limpieza del archivo (puede quedar un header escrito antes de fallar).
+        
         if (archivo.exists()) {
             archivo.delete();
         }

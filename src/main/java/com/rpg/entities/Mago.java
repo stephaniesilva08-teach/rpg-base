@@ -40,7 +40,7 @@ public class Mago extends Personaje {
         mana = Math.min(MANA_MAXIMO, mana + REGENERACION_MANA);
     }
 
-    /** Bola de Fuego: ignora la defensa del objetivo y lo deja ardiendo (DoT). */
+    
     @Override
     public String realizarAtaqueEspecial(Personaje objetivo) throws SinManaException {
         if (mana < COSTO_MANA_ESPECIAL) {
