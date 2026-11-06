@@ -1,4 +1,4 @@
-# Simulador de Batalla RPG - Proyecto base
+g# Simulador de Batalla RPG - Proyecto base
 
 Este es el punto de partida del taller **Concurrencia e Hilos Aplicados al Simulador de Batalla RPG**,
 continuacion del proyecto integrador "Simulador de Batalla RPG / Arena de Heroes" de la **Unidad 4.1**.
